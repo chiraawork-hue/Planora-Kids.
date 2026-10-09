@@ -141,6 +141,7 @@ ctx.strokeStyle='#d3d8d5';ctx.lineWidth=2;ctx.strokeRect(20,148,760,375);
 const centers=[180,400,620],k=w.kind;
 ctx.textAlign='center';ctx.font='76px Arial';
 if(['sea','weather','hands','flowers','sky'].includes(k)){const sets={sea:['🐟','🐬','🐙'],weather:['☀️','🌧️','🌈'],hands:['🖐️','👂','👀'],flowers:['🌼','🌷','🌻'],sky:['☀️','🌙','⭐']};ctx.font='78px Arial';sets[k].forEach((v,i)=>ctx.fillText(v,centers[i],325));ctx.font='20px Arial';ctx.fillStyle='#24332c';ctx.fillText(w.description,400,440)}
+else if(k==='match'&&w.name.toLowerCase().includes('hewan')){ctx.font='78px Arial';['🐰','🐱','🐻'].forEach((v,i)=>ctx.fillText(v,centers[i],310));ctx.font='64px Arial';['🐻','🐰','🐱'].forEach((v,i)=>ctx.fillText(v,centers[i],455));ctx.font='18px Arial';ctx.fillStyle='#24332c';ctx.fillText('Hubungkan hewan yang sama!',400,190)}
 else if(k==='fruit'||k==='vehicles'){ctx.font='80px Arial';(k==='fruit'?['🍎','🍌','🍇']:['🚗','🚌','🚲']).forEach((v,i)=>ctx.fillText(v,centers[i],320));ctx.font='20px Arial';ctx.fillText(w.description,400,440)}
 else if(k==='subtract'){ctx.font='65px Arial';ctx.fillText('🍊 🍊 🍊 🍊 🍊',400,300);ctx.font='30px Arial';ctx.fillText('5 - 2 = ______',400,420)}
 else if(k==='sentence'){ctx.font='32px Arial';ctx.fillText('Ini ______ saya.',400,300);ctx.font='24px Arial';ctx.fillText('Lengkapi dengan kata: BUKU',400,410)}
@@ -173,6 +174,7 @@ function interactiveQuestion(w){
 if(!w.kind)return null;
 const k=w.kind,age=w.age;
 if(k==='colors')return {prompt:'Pilih warna merah!',choices:['🔴','🟡','🟢'],correct:0};
+if(k==='match'&&w.name.toLowerCase().includes('hewan'))return {prompt:'Pasangkan hewan: mana yang sama dengan 🐰?',choices:['🐱','🐰','🐻'],correct:1};
 if(k==='shapes')return {prompt:'Mana bentuk segitiga?',choices:['🔵','🔺','🟩'],correct:1};
 if(k==='animals')return {prompt:'Mana gambar kelinci?',choices:['🐻','🐰','🐱'],correct:1};
 if(k==='vehicles')return {prompt:'Mana kendaraan yang memiliki dua roda?',choices:['🚌','🚲','🚗'],correct:1};
