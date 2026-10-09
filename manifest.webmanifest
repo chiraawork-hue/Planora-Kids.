@@ -1,0 +1,17 @@
+{
+  "name": "Planora Kids — Little Play Club",
+  "short_name": "Planora Kids",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fffbf4",
+  "theme_color": "#fff8ee",
+  "description": "Less Screen, More Wonder — aktivitas offline untuk anak dan orang tua",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
