@@ -100,6 +100,37 @@ const worksheetCatalog=[
 [6,"Susun Kalimat Pendek","sentence","Lengkapi kalimat sederhana","✍️"],
 [6,"Urutkan sampai 20","sequence","Temukan angka yang hilang","🔢"],
 [6,"Tantangan Pola Warna","pattern","Tentukan bentuk berikutnya","🧩"]
+,
+[2,"Teman di Laut","sea","Kenali hewan laut","🐠"],
+[2,"Awan dan Matahari","weather","Kenali cuaca sederhana","☀️"],
+[2,"Tangan Kecilku","hands","Kenali anggota tubuh","🖐️"],
+[2,"Buah Bulat","fruit","Tunjuk buah yang berbentuk bulat","🍊"],
+[2,"Bunga Cantik","flowers","Amati bentuk bunga","🌼"],
+[2,"Garis Mendatar","trace","Ikuti garis besar mendatar","➖"],
+[3,"Keluarga Hewan","animals","Kenali tiga jenis hewan","🐱"],
+[3,"Bintang dan Bulan","sky","Kenali benda di langit","🌙"],
+[3,"Lingkaran di Sekitar Kita","shapes","Temukan bentuk lingkaran","⭕"],
+[3,"Taman Bunga","flowers","Kenali bunga dan warna","🌷"],
+[3,"Jalur ke Balon","trace","Ikuti jalur menuju balon","🎈"],
+[3,"Pola Matahari Bulan","pattern","Lanjutkan pola dua gambar","☀️"],
+[4,"Benda di Langit","sky","Kenali benda di langit","⭐"],
+[4,"Hitung Ikan","count","Hitung ikan satu sampai lima","🐟"],
+[4,"Cuaca Hari Ini","weather","Kenali gambar cuaca","🌦️"],
+[4,"Gambar Bunga","flowers","Lengkapi gambar bunga","🌸"],
+[4,"Urutan Siang Malam","story","Ceritakan urutan kegiatan","🌞"],
+[4,"Hewan Darat dan Laut","sea","Kenali hewan laut","🐬"],
+[5,"Hitung Hewan Laut","count","Hitung benda sampai sepuluh","🐙"],
+[5,"Kata tentang Alam","words","Baca kata alam sederhana","🌳"],
+[5,"Tebak Cuaca","weather","Cocokkan cuaca dengan gambar","🌧️"],
+[5,"Bintang Berurutan","sequence","Lengkapi urutan angka","⭐"],
+[5,"Pola Bunga","pattern","Lengkapi pola bunga","🌺"],
+[5,"Tambah Bintang","addition","Jumlahkan kelompok bintang","🌟"],
+[6,"Cerita Empat Musim","weather","Ceritakan perbedaan cuaca","🌈"],
+[6,"Soal Cerita Buah","addition","Selesaikan hitungan bergambar","🍎"],
+[6,"Baca Kata Alam","words","Latihan membaca kata","🌿"],
+[6,"Urutan Angka Lanjut","sequence","Isi angka yang hilang","🔢"],
+[6,"Kurangi Bintang","subtract","Kurangi kelompok bintang","⭐"],
+[6,"Tulis Cerita Mini","sentence","Lengkapi kalimat sederhana","📝"]
 ].map((w,i)=>({id:'ws'+i,age:w[0],name:w[1],kind:w[2],description:w[3],emoji:w[4],print:true}));
 let worksheetAge=3;
 function worksheetById(id){return worksheetCatalog.find(w=>w.id===id)||activities.find(a=>a.id===id)}
@@ -109,7 +140,8 @@ ctx.fillStyle='#fff';ctx.fillRect(0,0,800,550);ctx.fillStyle='#24332c';ctx.textA
 ctx.strokeStyle='#d3d8d5';ctx.lineWidth=2;ctx.strokeRect(20,148,760,375);
 const centers=[180,400,620],k=w.kind;
 ctx.textAlign='center';ctx.font='76px Arial';
-if(k==='fruit'||k==='vehicles'){ctx.font='80px Arial';(k==='fruit'?['🍎','🍌','🍇']:['🚗','🚌','🚲']).forEach((v,i)=>ctx.fillText(v,centers[i],320));ctx.font='20px Arial';ctx.fillText(w.description,400,440)}
+if(['sea','weather','hands','flowers','sky'].includes(k)){const sets={sea:['🐟','🐬','🐙'],weather:['☀️','🌧️','🌈'],hands:['🖐️','👂','👀'],flowers:['🌼','🌷','🌻'],sky:['☀️','🌙','⭐']};ctx.font='78px Arial';sets[k].forEach((v,i)=>ctx.fillText(v,centers[i],325));ctx.font='20px Arial';ctx.fillStyle='#24332c';ctx.fillText(w.description,400,440)}
+else if(k==='fruit'||k==='vehicles'){ctx.font='80px Arial';(k==='fruit'?['🍎','🍌','🍇']:['🚗','🚌','🚲']).forEach((v,i)=>ctx.fillText(v,centers[i],320));ctx.font='20px Arial';ctx.fillText(w.description,400,440)}
 else if(k==='subtract'){ctx.font='65px Arial';ctx.fillText('🍊 🍊 🍊 🍊 🍊',400,300);ctx.font='30px Arial';ctx.fillText('5 - 2 = ______',400,420)}
 else if(k==='sentence'){ctx.font='32px Arial';ctx.fillText('Ini ______ saya.',400,300);ctx.font='24px Arial';ctx.fillText('Lengkapi dengan kata: BUKU',400,410)}
 else if(k==='colors'){['#ff754d','#ffd44d','#42bf84'].forEach((color,i)=>{ctx.beginPath();ctx.arc(centers[i],300,78,0,7);ctx.fillStyle=color;ctx.fill()});ctx.fillStyle='#24332c';ctx.font='20px Arial';['Merah','Kuning','Hijau'].forEach((v,i)=>ctx.fillText(v,centers[i],430))}
