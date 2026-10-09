@@ -134,7 +134,7 @@ const worksheetCatalog=[
 ].map((w,i)=>({id:'ws'+i,age:w[0],name:w[1],kind:w[2],description:w[3],emoji:w[4],print:true}));
 let worksheetAge=3;
 function worksheetById(id){return worksheetCatalog.find(w=>w.id===id)||activities.find(a=>a.id===id)}
-function openWorksheet(id){const w=worksheetById(id);if(!w)return;$('dialog').hidden=false;$('dialog').className='modalback';$('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Pilih cara mengerjakan"><button class="close">×</button><h2>'+w.emoji+' '+w.name+'</h2><p>'+w.description+'</p><p>Untuk usia '+(w.age||w.ages.join('–'))+' tahun. Pilih cara mengerjakan:</p><div class="actions"><button id="wsDigital">Kerjakan di HP / Tablet</button><button id="wsPrint">Cetak A4</button></div></div>';$('dialog').querySelector('.close').onclick=close;$('wsDigital').onclick=()=>digitalActivity(w);$('wsPrint').onclick=()=>printActivity(w)}
+function openWorksheet(id){const w=worksheetById(id);if(!w)return;$('dialog').hidden=false;$('dialog').className='modalback';$('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Pilih cara mengerjakan"><button class="close">×</button><h2>'+w.emoji+' '+w.name+'</h2><p>'+w.description+'</p><p>Untuk usia '+(w.age||w.ages.join('–'))+' tahun. Pilih cara mengerjakan:</p><div class="actions"><button id="wsDigital">Kerjakan di HP / Tablet</button><button id="wsPrint">Cetak A4</button></div></div>';$('dialog').querySelector('.close').onclick=close;$('wsDigital').onclick=()=>interactiveQuestion(w)?showInteractiveQuestion(w):digitalActivity(w);$('wsPrint').onclick=()=>printActivity(w)}
 function drawCatalogWorksheet(ctx,w){
 ctx.fillStyle='#fff';ctx.fillRect(0,0,800,550);ctx.fillStyle='#24332c';ctx.textAlign='left';ctx.font='bold 28px Arial';ctx.fillText(w.name,30,48);ctx.font='18px Arial';ctx.fillText('Nama: _____________________   Usia: '+w.age+' tahun',30,85);ctx.font='19px Arial';ctx.fillText(w.description,30,125);
 ctx.strokeStyle='#d3d8d5';ctx.lineWidth=2;ctx.strokeRect(20,148,760,375);
@@ -169,6 +169,40 @@ else if(a.id==='feeling'){ctx.font='20px Arial';ctx.fillText('Gambar mata dan mu
 else if(a.id==='dots'){ctx.font='67px Arial';ctx.fillText('☁️     ☁️     ☁️',400,220);ctx.font='20px Arial';ctx.fillText('Buat titik-titik hujan di bawah awan!',400,465)}
 else{ctx.font='20px Arial';ctx.fillText('Gambarkan taman impianmu di bawah ini!',400,150);ctx.font='50px Arial';ctx.fillText('🌷                 🌳                 🦋',400,445)}
 ctx.textAlign='start'}
+function interactiveQuestion(w){
+if(!w.kind)return null;
+const k=w.kind,age=w.age;
+if(k==='colors')return {prompt:'Pilih warna merah!',choices:['🔴','🟡','🟢'],correct:0};
+if(k==='shapes')return {prompt:'Mana bentuk segitiga?',choices:['🔵','🔺','🟩'],correct:1};
+if(k==='animals')return {prompt:'Mana gambar kelinci?',choices:['🐻','🐰','🐱'],correct:1};
+if(k==='vehicles')return {prompt:'Mana kendaraan yang memiliki dua roda?',choices:['🚌','🚲','🚗'],correct:1};
+if(k==='fruit')return {prompt:'Mana buah pisang?',choices:['🍎','🍇','🍌'],correct:2};
+if(k==='size')return {prompt:'Mana yang lebih besar?',choices:['🐘','🐭'],correct:0};
+if(k==='faces')return {prompt:'Mana wajah yang sedang senang?',choices:['😢','😊','😮'],correct:1};
+if(k==='sea')return {prompt:'Mana hewan yang hidup di laut?',choices:['🐱','🐬','🐔'],correct:1};
+if(k==='weather')return {prompt:'Mana gambar hujan?',choices:['☀️','🌧️','🌈'],correct:1};
+if(k==='hands')return {prompt:'Mana gambar tangan?',choices:['👂','🖐️','👀'],correct:1};
+if(k==='flowers')return {prompt:'Mana gambar bunga?',choices:['🌳','🌷','🍎'],correct:1};
+if(k==='sky')return {prompt:'Mana gambar bulan?',choices:['⭐','🌙','☀️'],correct:1};
+if(k==='pattern')return {prompt:'Lanjutkan pola: 🔴 🔵 🔴 🔵 ...',choices:['🔵','🔴','🟢'],correct:1};
+if(k==='count')return {prompt:'Hitung jumlah apel: 🍎 🍎 🍎',choices:['2','3','4'],correct:1};
+if(k==='compare')return {prompt:'Mana yang lebih banyak?',choices:['🍎 🍎','🍎 🍎 🍎 🍎'],correct:1};
+if(k==='sequence')return {prompt:age===6?'Angka yang hilang: 11, 12, __, 14':'Angka yang hilang: 1, 2, __, 4',choices:age===6?['15','13','10']:['5','3','2'],correct:1};
+if(k==='letters')return {prompt:'Huruf awal kata AYAM?',choices:['B','A','C'],correct:1};
+if(k==='words')return {prompt:'Pilih kata BOLA',choices:['BUKU','BOLA','BAJU'],correct:1};
+if(k==='addition')return {prompt:'🍎 🍎 + 🍎 = berapa apel?',choices:['2','3','4'],correct:1};
+if(k==='subtract')return {prompt:'5 buah dikurangi 2 buah = ?',choices:['2','3','4'],correct:1};
+if(k==='sentence')return {prompt:'Lengkapi: Ini ___ saya.',choices:['BUKU','MAKAN','LARI'],correct:0};
+if(k==='story')return {prompt:'Apa yang tumbuh menjadi bunga?',choices:['🌱','🚗','🏠'],correct:0};
+return null}
+function showInteractiveQuestion(w){
+const q=interactiveQuestion(w);if(!q)return;
+$('dialog').hidden=false;$('dialog').className='modalback';
+$('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true"><button class="close" aria-label="Tutup">×</button><h2>'+w.emoji+' '+w.name+'</h2><p>🎯 '+q.prompt+'</p><div class="digital-tools" id="answerChoices" style="justify-content:center"></div><p id="answerFeedback" role="status" aria-live="polite">Pilih jawaban bersama anak, ya!</p><div class="actions"><button id="tryDraw">🖍️ Lanjut menggambar</button><button id="printQuestion">🖨️ Cetak worksheet</button></div></div>';
+$('dialog').querySelector('.close').onclick=close;
+$('answerChoices').innerHTML=q.choices.map((v,i)=>'<button data-answer="'+i+'" style="font-size:28px;min-width:85px;min-height:75px;background:#fff0cb;border:2px solid #29372f;border-radius:8px">'+v+'</button>').join('');
+$('answerChoices').querySelectorAll('button').forEach(b=>b.onclick=()=>{const good=+b.dataset.answer===q.correct;$('answerFeedback').textContent=good?'🌟 Hebat! Kamu berhasil!':'💛 Coba lagi, yuk!';if(good){$('answerChoices').querySelectorAll('button').forEach(x=>x.disabled=true);b.style.background='#a9ebc0'}});
+$('tryDraw').onclick=()=>digitalActivity(w);$('printQuestion').onclick=()=>printActivity(w)}
 function digitalActivity(a){
 $('dialog').hidden=false;$('dialog').className='modalback';
 $('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Worksheet digital"><button class="close" aria-label="Tutup">×</button><h2>'+a.emoji+' '+a.name+'</h2><p>'+a.description+'</p><p class="digital-note">Gambar, lingkari, atau buat coretan dengan jari di HP/tablet. Bisa juga memakai mouse.</p><div class="digital-tools"><button data-pen="#25332e">Hitam</button><button data-pen="#ee6b47">Merah</button><button data-pen="#3885d6">Biru</button><button data-pen="#26965a">Hijau</button><button id="eraseDrawing">Hapus semua</button><button id="saveDrawing">Simpan gambar</button><button id="printDigital">Cetak A4</button></div><div class="digital-board"><canvas id="drawBoard" width="800" height="550" aria-label="Area menggambar interaktif"></canvas></div><p class="digital-note">Dampingi anak saat menggunakan layar. Selesai bermain? Saatnya kembali beraktivitas tanpa layar.</p></div>';
