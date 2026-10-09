@@ -175,7 +175,7 @@ const worksheetCatalog=[
 ].map((w,i)=>({id:'ws'+i,age:w[0],name:w[1],kind:w[2],description:w[3],emoji:w[4],print:true}));
 let worksheetAge=3;
 function worksheetById(id){return worksheetCatalog.find(w=>w.id===id)||activities.find(a=>a.id===id)}
-function openWorksheet(id){const w=worksheetById(id);if(!w)return;$('dialog').hidden=false;$('dialog').className='modalback';$('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Pilih cara mengerjakan"><button class="close">×</button><h2>'+w.emoji+' '+w.name+'</h2><p>'+w.description+'</p><p>Untuk usia '+(w.age||w.ages.join('–'))+' tahun. Pilih cara mengerjakan:</p><div class="actions"><button id="wsDigital">Kerjakan di HP / Tablet</button><button id="wsPrint">Cetak A4</button></div></div>';$('dialog').querySelector('.close').onclick=close;$('wsDigital').onclick=()=>interactiveQuestion(w)?showInteractiveQuestion(w):digitalActivity(w);$('wsPrint').onclick=()=>printActivity(w)}
+function openWorksheet(id){const w=worksheetById(id);if(!w)return;$('dialog').hidden=false;$('dialog').className='modalback';$('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Pilih cara mengerjakan"><button class="close">×</button><h2>'+w.emoji+' '+w.name+'</h2><p>'+w.description+'</p><p>Untuk usia '+(w.age||w.ages.join('–'))+' tahun. Pilih cara mengerjakan:</p><div class="actions"><button id="wsDigital">Kerjakan di HP / Tablet</button><button id="wsPrint">Cetak A4</button></div></div>';$('dialog').querySelector('.close').onclick=close;$('wsDigital').onclick=()=>premiumWorksheetType(w)?digitalActivity(w):interactiveQuestion(w)?showInteractiveQuestion(w):digitalActivity(w);$('wsPrint').onclick=()=>printActivity(w)}
 function drawCatalogWorksheet(ctx,w){
 ctx.fillStyle='#fff';ctx.fillRect(0,0,800,550);ctx.fillStyle='#24332c';ctx.textAlign='left';ctx.font='bold 28px Arial';ctx.fillText(w.name,30,48);ctx.font='18px Arial';ctx.fillText('Nama: _____________________   Usia: '+w.age+' tahun',30,85);ctx.font='19px Arial';ctx.fillText(w.description,30,125);
 ctx.strokeStyle='#d3d8d5';ctx.lineWidth=2;ctx.strokeRect(20,148,760,375);
@@ -201,7 +201,31 @@ else if(k==='words'){ctx.font='65px Arial';ctx.fillText('BUKU     BOLA',400,320)
 else if(k==='faces'){ctx.font='88px Arial';ctx.fillText('😊     😢     😮',400,340)}
 else if(k==='story'){ctx.font='75px Arial';ctx.fillText('🌱     🌷     🌻',400,330);ctx.font='20px Arial';ctx.fillText('Ceritakan urutan gambar bersama orang tua!',400,440)}
 ctx.textAlign='left'}
-function worksheetTemplate(ctx,a){if(a.kind){drawCatalogWorksheet(ctx,a);return}
+function premiumWorksheetType(w){return ['pasangkan hewan','garis pertamaku','hitung buah'].includes(w.name.toLowerCase())}
+function premiumWorksheet(ctx,w){
+const n=w.name.toLowerCase(),type=n==='pasangkan hewan'?'animal':n==='garis pertamaku'?'trace':n==='hitung buah'?'count':null;
+if(!type)return false;
+const W=800,H=1100;ctx.canvas.width=W;ctx.canvas.height=H;ctx.fillStyle='#fff';ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#f8f5ec';ctx.fillRect(0,0,W,135);ctx.fillStyle='#294536';ctx.font='bold 18px Arial';ctx.fillText('PLANORA  /  LITTLE WORKSHEETS',42,40);
+ctx.font='bold 39px Arial';ctx.fillText(w.name,42,93);
+ctx.fillStyle='#4b6155';ctx.font='18px Arial';ctx.fillText('Nama: _________________________      Usia: '+w.age+' tahun',42,165);
+ctx.fillStyle='#f5faf7';ctx.beginPath();ctx.roundRect(35,190,730,76,16);ctx.fill();
+ctx.fillStyle='#30483b';ctx.font='bold 22px Arial';
+ctx.fillText(type==='animal'?'Tarik garis untuk memasangkan hewan yang sama.':type==='trace'?'Ikuti setiap garis putus-putus dengan pensilmu.':'Hitung buahnya, lalu lingkari angka yang benar.',55,235);
+ctx.fillStyle='#e8f3eb';ctx.beginPath();ctx.roundRect(35,290,730,725,20);ctx.fill();
+ctx.textAlign='center';
+if(type==='animal'){
+const left=['🐰','🐱','🐻','🐸','🐼','🦊'],right=['🐻','🦊','🐰','🐼','🐸','🐱'];
+left.forEach((v,i)=>{const y=350+i*106;ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(68,y-37,160,83,15);ctx.fill();ctx.beginPath();ctx.roundRect(572,y-37,160,83,15);ctx.fill();ctx.font='53px "Segoe UI Emoji",Arial';ctx.fillText(v,148,y+22);ctx.fillText(right[i],652,y+22);ctx.fillStyle='#56705f';ctx.beginPath();ctx.arc(250,y,6,0,7);ctx.arc(550,y,6,0,7);ctx.fill()});
+}else if(type==='trace'){
+const paths=[0,1,2,3,4,5];paths.forEach((i)=>{const y=354+i*106;ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(65,y-39,670,86,14);ctx.fill();ctx.fillStyle='#2b5846';ctx.font='23px Arial';ctx.fillText('●',100,y+7);ctx.fillText('★',694,y+7);ctx.beginPath();ctx.strokeStyle='#b6a2dd';ctx.lineWidth=5;ctx.setLineDash([10,13]);ctx.moveTo(130,y);if(i===0)ctx.lineTo(660,y);else if(i===1){for(let x=130;x<=660;x+=10)ctx.lineTo(x,y+Math.sin((x-130)/35)*24)}else if(i===2){for(let x=130;x<=660;x+=53)ctx.lineTo(x,y+(Math.round((x-130)/53)%2?26:-26))}else if(i===3)ctx.bezierCurveTo(300,y-75,480,y+75,660,y);else if(i===4){for(let x=130;x<=660;x+=10)ctx.lineTo(x,y+Math.sin((x-130)/17)*13)}else ctx.bezierCurveTo(320,y+75,470,y-75,660,y);ctx.stroke();ctx.setLineDash([])});
+}else{
+const fruit=['🍎','🍌','🍓','🍊','🍇','🍐'];fruit.forEach((v,i)=>{const y=352+i*106,num=i+1;ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(57,y-38,686,86,14);ctx.fill();ctx.font='32px "Segoe UI Emoji",Arial';for(let j=0;j<num;j++)ctx.fillText(v,102+j*60,y+13);ctx.font='bold 25px Arial';ctx.fillStyle='#345744';const opts=[Math.max(1,num-1),num,Math.min(7,num+1)];opts.forEach((o,j)=>{const x=527+j*76;ctx.beginPath();ctx.strokeStyle='#b7cbbd';ctx.lineWidth=2;ctx.arc(x,y,24,0,7);ctx.stroke();ctx.fillText(String(o),x,y+9)})});
+}
+ctx.textAlign='left';ctx.fillStyle='#53675b';ctx.font='16px Arial';ctx.fillText('Belajar pelan-pelan, ulangi sesukamu.  •  Less Screen, More Wonder',43,1050);
+ctx.textAlign='start';return true;
+}
+function worksheetTemplate(ctx,a){if(a.kind&&premiumWorksheet(ctx,a))return;if(a.kind){drawCatalogWorksheet(ctx,a);return}
 ctx.fillStyle='#fff';ctx.fillRect(0,0,800,550);ctx.fillStyle='#25332e';ctx.font='bold 29px Arial';ctx.fillText(a.name,32,47);ctx.font='18px Arial';ctx.fillText('Nama: _________________________',32,85);
 ctx.strokeStyle='#b8c0bc';ctx.lineWidth=2;ctx.strokeRect(22,110,756,412);
 ctx.textAlign='center';
@@ -250,7 +274,7 @@ function digitalActivity(a){
 $('dialog').hidden=false;$('dialog').className='modalback';
 $('dialog').innerHTML='<div class="modal" role="dialog" aria-modal="true" aria-label="Worksheet digital"><button class="close" aria-label="Tutup">×</button><h2>'+a.emoji+' '+a.name+'</h2><p>'+a.description+'</p><p class="digital-note">Gambar, lingkari, atau buat coretan dengan jari di HP/tablet. Bisa juga memakai mouse.</p><div class="digital-tools"><button data-pen="#25332e">Hitam</button><button data-pen="#ee6b47">Merah</button><button data-pen="#3885d6">Biru</button><button data-pen="#26965a">Hijau</button><button id="eraseDrawing">Hapus semua</button><button id="saveDrawing">Simpan gambar</button><button id="printDigital">Cetak A4</button></div><div class="digital-board"><canvas id="drawBoard" width="800" height="550" aria-label="Area menggambar interaktif"></canvas></div><p class="digital-note">Dampingi anak saat menggunakan layar. Selesai bermain? Saatnya kembali beraktivitas tanpa layar.</p></div>';
 $('dialog').querySelector('.close').onclick=close;
-const c=$('drawBoard'),ctx=c.getContext('2d');let drawing=false,last=null,pen='#25332e';
+const c=$('drawBoard'),ctx=c.getContext('2d');if(premiumWorksheetType(a)){c.width=800;c.height=1100}let drawing=false,last=null,pen='#25332e';
 function reset(){worksheetTemplate(ctx,a)}
 reset();
 function pos(e){const r=c.getBoundingClientRect();return {x:(e.clientX-r.left)*c.width/r.width,y:(e.clientY-r.top)*c.height/r.height}}
@@ -262,7 +286,7 @@ $('eraseDrawing').onclick=()=>{if(confirm('Hapus semua gambar?'))reset()};
 $('saveDrawing').onclick=()=>{const link=document.createElement('a');link.download='planora-kids-'+a.id+'.png';link.href=c.toDataURL('image/png');link.click()};
 $('printDigital').onclick=()=>{const img=c.toDataURL('image/png');$('printsheet').innerHTML='<h1>Planora Kids — '+a.name+'</h1><img src="'+img+'" style="width:100%;height:auto;margin-top:15mm"><p>Less Screen, More Wonder</p>';window.print()};
 }
-function printActivity(a){const c=document.createElement('canvas');c.width=800;c.height=550;worksheetTemplate(c.getContext('2d'),a);$('printsheet').innerHTML='<h1>Planora Kids — '+a.name+'</h1><p>Worksheet A4 untuk dicetak dan dikerjakan bersama anak.</p><img src="'+c.toDataURL('image/png')+'" style="width:100%;height:auto;margin-top:10mm"><p>Untuk orang tua: '+a.tip+'</p>';window.print()}
+function printActivity(a){const c=document.createElement('canvas');c.width=800;c.height=550;worksheetTemplate(c.getContext('2d'),a);$('printsheet').innerHTML='<img src="'+c.toDataURL('image/png')+'" style="width:100%;height:auto;max-height:260mm;object-fit:contain">';window.print()}
 function renderSheets(){const shown=worksheetCatalog.filter(w=>w.age===worksheetAge);$('sheets').innerHTML='<div style="grid-column:1/-1"><h3>Pilih usia anak <small style="font-size:12px;color:#69746d">· Library v90</small></h3><div class="digital-tools">'+[2,3,4,5,6].map(age=>'<button class="smallbutton" data-age="'+age+'" style="background:'+(worksheetAge===age?'#ffcb59':'#eef0ed')+';border:2px solid #29372f">'+age+' tahun</button>').join('')+'</div><p>'+shown.length+' worksheet untuk usia '+worksheetAge+' tahun · '+worksheetCatalog.length+' worksheet tersedia untuk seluruh usia. Pilih tugas yang sesuai kesiapan anak, tidak harus selesai semua.</p></div>'+shown.map(w=>'<div class="sheet"><div style="font-size:45px">'+w.emoji+'</div><b>'+w.name+'</b><p>'+w.description+'</p><button data-worksheet="'+w.id+'">Kerjakan / Cetak</button></div>').join('');$('sheets').querySelectorAll('[data-age]').forEach(b=>b.onclick=()=>{worksheetAge=+b.dataset.age;renderSheets()});$('sheets').querySelectorAll('[data-worksheet]').forEach(b=>b.onclick=()=>openWorksheet(b.dataset.worksheet))}
 function renderWeek(){$('week').innerHTML=['Senin','Selasa','Rabu','Kamis','Jumat'].map(d=>'<div class="day"><strong>'+d+' 🌼</strong><span>'+(schedule[d]?activities.find(a=>a.id===schedule[d])?.name:'Belum ada rencana')+'</span>'+(schedule[d]?'<p><button class="smallbutton" data-clear="'+d+'">Hapus</button></p>':'')+'</div>').join('');$('week').querySelectorAll('[data-clear]').forEach(b=>b.onclick=()=>{delete schedule[b.dataset.clear];store('pk_schedule',schedule);renderWeek()})}
 function renderSaved(){$('savedlist').innerHTML=favorites.length?favorites.map(id=>activities.find(a=>a.id===id)).filter(Boolean).map(card).join(''):'<div class="empty">💛 Belum ada favorit. Pilih aktivitas dari Smart Activity Finder, lalu simpan di sini.</div>';bindCards($('savedlist'))}init();
